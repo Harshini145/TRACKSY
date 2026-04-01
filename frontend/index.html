@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracksy</title>
+
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>💰 Tracksy</h2>
+    <ul>
+        <li onclick="showPage('home')">Home</li>
+        <li onclick="showPage('dashboard')">Dashboard</li>
+        <li onclick="showPage('add')">Add Expense</li>
+        <li onclick="showPage('theme')">Theme</li>
+    </ul>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- HOME PAGE -->
+<div id="homePage">
+    <h1>Home</h1>
+
+    <div class="row">
+        <select id="monthSelect"></select>
+        <select id="yearSelect"></select>
+    </div>
+
+    <div class="card">
+        <h3>Set Budget</h3>
+        <input id="budgetInput" type="number" placeholder="Enter monthly budget">
+        <button onclick="setBudget()">Save Budget</button>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardPage" style="display:none;">
+    <h1>Dashboard</h1>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Spent</h3>
+            <p id="total">₹0</p>
+        </div>
+
+        <div class="card">
+            <h3>Budget</h3>
+            <p id="budget">₹0</p>
+        </div>
+
+        <div class="card">
+            <h3>Remaining</h3>
+            <p id="remaining">₹0</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <canvas id="chart"></canvas>
+    </div>
+</div>
+
+<!-- ADD EXPENSE -->
+<div id="addPage" style="display:none;">
+    <h1>Add Expense</h1>
+
+    <form id="expenseForm">
+        <input id="desc" placeholder="Description" required>
+        <input id="amount" type="number" placeholder="Amount" required>
+
+        <select id="category"></select>
+
+        <button type="submit">Add Expense</button>
+    </form>
+</div>
+
+<!-- THEME -->
+<div id="themePage" style="display:none;">
+    <h1>Theme</h1>
+
+    <div class="themes">
+        <button onclick="setTheme('yellow')">Pastel Yellow</button>
+        <button onclick="setTheme('pink')">Pastel Pink</button>
+        <button onclick="setTheme('blue')">Pastel Blue</button>
+        <button onclick="setTheme('orange')">Pastel Orange</button>
+        <button onclick="setTheme('black')">Dark</button>
+        <button onclick="setTheme('white')">Light</button>
+    </div>
+</div>
+
+</div>
+
+<!-- CATEGORY POPUP -->
+<div id="popup" class="popup">
+    <div class="popup-box">
+        <h3>Select Category</h3>
+
+        <div id="catList" class="cat-list"></div>
+
+        <input id="customCat" placeholder="Enter custom category" style="display:none;">
+
+        <div class="popup-btns">
+            <button onclick="confirmCategory()">OK</button>
+            <button onclick="closePopup()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>
