@@ -1,61 +1,63 @@
-💰 Tracksy – Expense & Budget Management System
+# Tracksy – Expense & Budget Management System
 
 A Web-Based Application to Track Expenses, Manage Budgets, and Visualize Spending Patterns
 
-📌 Overview
+#Overview
 
 Tracksy is an interactive web application that allows users to:
 
-Create an account and login 🔐
-Set monthly budgets 💰
-Add and manage expenses 📥
-View spending analytics 📊
+Create an account and login 
+Set monthly budgets 
+Add and manage expenses 
+View spending analytics 
 Track remaining budget in real-time
 
 It is designed to help users manage personal finances efficiently with a clean and intuitive interface.
 
-🎯 Problem Statement
+# Problem Statement
 
 Managing personal expenses is challenging because:
 
-Spending is not tracked regularly 📉
-Budget planning is inconsistent ❌
-Users lack clear financial insights 📊
-💡 Solution
+Spending is not tracked regularly 
+Budget planning is inconsistent 
+Users lack clear financial insights 
+
+#Solution
 
 Tracksy provides a structured and user-friendly solution:
 
-✔️ User-based authentication system
-✔️ Monthly budget tracking
-✔️ Category-wise expense management
-✔️ Real-time dashboard updates
-✔️ Smart recommendations for better spending
+1. User-based authentication system
+2. Monthly budget tracking
+3. Category-wise expense management
+4. Real-time dashboard updates
+5. Smart recommendations for better spending
 
-✨ Features
+# Features
 
-🔐 Login & Signup system
+1. Login & Signup system
 
-💰 Monthly budget setting
+2. Monthly budget setting
 
-➕ Add expenses with categories
+3. Add expenses with categories
 
-🗂 Dynamic category management
+4. Dynamic category management
 
-📊 Dashboard with pie chart visualization
+5.  Dashboard with pie chart visualization
 
-📋 Monthly expense list
+6. Monthly expense list
 
-❌ Delete expenses functionality
+7. Delete expenses functionality
 
-🎨 Theme customization
+8. Theme customization
 
-🤖 AI chatbot for assistance
+9. AI chatbot for assistance
 
-💡 Expense recommendations system
+10. Expense recommendations system
 
-⚡ Real-time updates without reload
+11. Real-time updates without reload
+    
 
-🛠 Tech Stack
+# Tech Stack
 
 Technology	Purpose
 
@@ -71,7 +73,7 @@ Chart.js	Data Visualization
 
 Git & GitHub	Version Control
 
-📁 Project Structure
+# Project Structure
 
 tracksy/
 │
@@ -82,24 +84,36 @@ tracksy/
 │   └── script.js     # Logic
 ├── tracksy.sql       # Database
 └── README.md         # Documentation
+
+
 ⚙️ How It Works
 
 1️⃣ User signs up or logs in
+
 2️⃣ Monthly budget is set
+
 3️⃣ Expenses are added with categories
+
 4️⃣ Data is stored user-wise
+
 5️⃣ Dashboard calculates:
 
 Total spent
 Budget
 Remaining balance
+
 6️⃣ Spending is visualized through charts
+
 7️⃣ User can view and delete expenses
+
 8️⃣ AI chatbot assists and suggests improvements
 
-👨‍💻 Contributions
+# Contributions
 
-👨‍💻 Lakshya – JavaScript & Backend
-👨‍💻 Arpit – CSS & Backend
-👩‍💻 Yanjana – Database & AI chatbot and recommendation system
-👩‍💻 Harshini – HTML & AI chatbot and recommendation system
+1. Lakshya – JavaScript & Backend
+
+2.Arpit – CSS & Backend
+
+3. Yanjana – Database & AI chatbot and recommendation system
+
+4. Harshini – HTML & AI chatbot and recommendation system
