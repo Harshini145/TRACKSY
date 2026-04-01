@@ -112,7 +112,7 @@ Remaining balance
 
 1. Lakshya – JavaScript & Backend
 
-2.Arpit – CSS & Backend
+2. Arpit – CSS & Backend
 
 3. Yanjana – Database & AI chatbot and recommendation system
 
