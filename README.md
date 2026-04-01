@@ -34,26 +34,45 @@ Tracksy provides a structured and user-friendly solution:
 ✨ Features
 
 🔐 Login & Signup system
+
 💰 Monthly budget setting
+
 ➕ Add expenses with categories
+
 🗂 Dynamic category management
+
 📊 Dashboard with pie chart visualization
+
 📋 Monthly expense list
+
 ❌ Delete expenses functionality
+
 🎨 Theme customization
+
 🤖 AI chatbot for assistance
+
 💡 Expense recommendations system
+
 ⚡ Real-time updates without reload
 
 🛠 Tech Stack
+
 Technology	Purpose
+
 HTML	Structure
+
 CSS	Styling
+
 JavaScript	Logic & Functionality
+
 MySQL	Database
+
 Chart.js	Data Visualization
+
 Git & GitHub	Version Control
+
 📁 Project Structure
+
 tracksy/
 │
 ├── index.html        # Main UI
