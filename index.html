@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracksy - Modern Expense Tracker</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- ================= AUTH ================= -->
+<div id="authPage" class="auth-container">
+    <div class="auth-box fade-in">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-wallet"></i></div>
+            <h2>Tracksy</h2>
+        </div>
+        <p class="subtitle">Manage your expenses effortlessly</p>
+
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input id="username" placeholder="Username">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input id="email" placeholder="Email">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input id="password" type="password" placeholder="Password">
+        </div>
+
+        <div class="auth-buttons">
+            <button class="btn-primary" onclick="login()">Login</button>
+            <button class="btn-secondary" onclick="signup()">Sign Up</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MAIN APP ================= -->
+<div id="app" style="display:none;" class="fade-in">
+
+<div class="sidebar">
+    <div class="logo">
+        <div class="logo-icon"><i class="fas fa-wallet"></i></div>
+        <h2>Tracksy</h2>
+    </div>
+    <ul>
+        <li onclick="showPage('home')" class="active" id="nav-home"><i class="fas fa-home"></i> Home</li>
+        <li onclick="showPage('dashboard')" id="nav-dashboard"><i class="fas fa-chart-pie"></i> Dashboard</li>
+        <li onclick="showPage('add')" id="nav-add"><i class="fas fa-plus-circle"></i> Add Expense</li>
+        <li onclick="showPage('list')" id="nav-list"><i class="fas fa-list"></i> Expense List</li>
+        <li onclick="showPage('food')" id="nav-food"><i class="fa-solid fa-utensils"></i> Restaurants</li>
+    </ul>
+    <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+</div>
+
+<div class="main">
+
+<!-- HOME -->
+<div id="homePage" class="page-content active-page">
+    <div class="header">
+        <h1>Welcome back 👋</h1>
+        <p class="text-muted">Here is what's happening with your finances today.</p>
+    </div>
+
+    <div class="row filter-row">
+        <div class="select-wrapper">
+            <i class="far fa-calendar-alt"></i>
+            <select id="monthSelect"></select>
+        </div>
+        <div class="select-wrapper">
+            <i class="far fa-calendar"></i>
+            <select id="yearSelect"></select>
+        </div>
+    </div>
+
+    <div class="card fade-up">
+        <div class="card-header">
+            <h3><i class="fas fa-bullseye"></i> Set Budget</h3>
+        </div>
+        <div class="input-group">
+            <span class="currency-symbol">₹</span>
+            <input id="budgetInput" placeholder="Enter monthly budget">
+        </div>
+        <button class="btn-primary" onclick="setBudget()">Save Budget</button>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardPage" class="page-content" style="display:none;">
+    <div class="header">
+        <h1>Dashboard</h1>
+        <p class="text-muted">Overview of your expenses</p>
+    </div>
+
+    <div class="cards">
+        <div class="card stat-card fade-up" style="animation-delay: 0.1s">
+            <div class="stat-icon purple"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-details">
+                <p class="text-muted">Total Spent</p>
+                <h3 id="total">₹0</h3>
+            </div>
+        </div>
+        <div class="card stat-card fade-up" style="animation-delay: 0.2s">
+            <div class="stat-icon blue"><i class="fas fa-piggy-bank"></i></div>
+            <div class="stat-details">
+                <p class="text-muted">Budget</p>
+                <h3 id="budget">₹0</h3>
+            </div>
+        </div>
+        <div class="card stat-card fade-up" style="animation-delay: 0.3s">
+            <div class="stat-icon green"><i class="fas fa-wallet"></i></div>
+            <div class="stat-details">
+                <p class="text-muted">Remaining</p>
+                <h3 id="remaining">₹0</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="card chart-card fade-up" style="animation-delay: 0.4s">
+        <div class="card-header">
+            <h3><i class="fas fa-chart-pie"></i> Spending by Category</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- ADD EXPENSE -->
+<div id="addPage" class="page-content" style="display:none;">
+    <div class="header">
+        <h1>Add Expense</h1>
+        <p class="text-muted">Record a new transaction</p>
+    </div>
+
+    <div class="card fade-up">
+        <form id="expenseForm">
+            <div class="input-group">
+                <i class="fas fa-tag"></i>
+                <input id="desc" placeholder="Expense Description" required>
+            </div>
+            <div class="input-group">
+                <span class="currency-symbol">₹</span>
+                <input id="amount" type="number" placeholder="Amount" required>
+            </div>
+            <div class="select-wrapper">
+                <i class="fas fa-folder-open"></i>
+                <select id="category"></select>
+            </div>
+            <button type="submit" class="btn-primary w-100">Add Expense</button>
+        </form>
+    </div>
+</div>
+
+<!-- ================= EXPENSE LIST ================= -->
+<div id="listPage" class="page-content" style="display:none;">
+    <div class="header">
+        <h1>Expense List</h1>
+        <p class="text-muted">Recent transactions</p>
+    </div>
+
+    <div class="card fade-up p-0">
+        <ul id="expenseList" class="modern-list"></ul>
+    </div>
+</div>
+
+<!-- ================= FOOD SPOTS ================= -->
+<div id="foodPage" class="page-content" style="display:none;">
+    <div class="header">
+        <h1>Affordable Restaurants</h1>
+        <p class="text-muted">Find budget-friendly food near your live location.</p>
+    </div>
+    
+    <div class="card fade-up text-center">
+        <button class="btn-primary w-100" style="padding: 16px; font-size: 1.1rem;" onclick="findFoodSpots()">
+            <i class="fa-solid fa-location-dot"></i> Find Affordable Restaurants Near Me
+        </button>
+        <div id="foodLoader" style="display:none; margin-top: 20px;">
+            <i class="fa-solid fa-spinner fa-spin fa-2x" style="color: var(--primary);"></i>
+            <p class="text-muted mt-3" id="foodLoaderText">Accessing live location and finding spots...</p>
+        </div>
+    </div>
+
+    <div id="foodResults" class="food-grid mt-4"></div>
+</div>
+
+</div>
+
+<!-- AI BOT FAB -->
+<div class="ai-fab-container">
+    <button class="ai-fab" onclick="window.open('budgetbot_groq.html', '_blank')">
+        <img src="img/ai_bot.png" alt="AI Bot">
+        <span class="ai-tooltip">Ask AI</span>
+    </button>
+</div>
+
+</div>
+
+<!-- CATEGORY POPUP -->
+<div id="popup" class="popup">
+    <div class="popup-box fade-in">
+        <h3><i class="fas fa-list-ul"></i> Select Category</h3>
+        <p class="text-muted small mb-3">Choose a category or add a custom one.</p>
+        <div id="catList" class="category-grid"></div>
+
+        <input id="customCat" placeholder="Enter custom category" style="display:none;" class="mt-3">
+
+        <div class="popup-btns mt-4">
+            <button class="btn-primary" onclick="confirmCategory()">Confirm</button>
+            <button class="btn-secondary" onclick="closePopup()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
