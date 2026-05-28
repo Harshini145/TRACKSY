@@ -17,6 +17,9 @@ A full-stack **expense & budget management app** — FastAPI backend + Vanilla J
 | ⏰ Background Scheduler | Hourly APScheduler job catches missed budget breaches |
 | 🎨 Theme Support | Light/dark mode preference saved per user |
 | 📊 Charts & Dashboard | Chart.js powered spending breakdown by category |
+| 🤖 Groq AI Budget Assistant | Powered by Groq + Ollama Version 3 (Llama 3) for ultra-fast AI responses, budget insights, expense analysis, and smart spending recommendations |
+| 🛍️ Budget Shopping AI | Compares product prices across Flipkart, Amazon, Myntra, and Nykaa to help users find the best deals within their budget |
+
 
 ---
 
@@ -361,3 +364,4 @@ ACCESS_TOKEN_EXPIRE_MINUTES=1440   # 1 day
 | Budget email sent twice | Shouldn't happen — check `Notifications` table for duplicate `[year-month:type]` tags |
 | Frontend not loading | Make sure the server is running and visit `/app/index.html`, not `/` |
 | `ModuleNotFoundError` for pydantic-settings | Run `pip install pydantic-settings` separately |
+
