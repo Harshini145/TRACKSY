@@ -129,6 +129,16 @@ h1, h2, h3, h4 {
     font-size: 0.9rem;
 }
 
+.auth-notice {
+    color: var(--text-main);
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 18px;
+    font-size: 0.9rem;
+}
+
 .input-group, .select-wrapper {
     position: relative;
     margin-bottom: 16px;
@@ -204,6 +214,17 @@ button {
 
 .btn-secondary:hover {
     background: var(--secondary-hover);
+}
+
+.btn-link {
+    background: transparent;
+    color: var(--text-muted);
+    padding: 4px 8px;
+    border: none;
+}
+
+.btn-link:hover {
+    color: var(--primary);
 }
 
 .delete-btn {

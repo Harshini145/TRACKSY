@@ -15,6 +15,30 @@ from email.mime.text import MIMEText
 from core.config import settings
 
 
+def _is_placeholder(value: str, placeholder: str) -> bool:
+    return not value or value.strip().lower() == placeholder.lower()
+
+
+def _smtp_password() -> str:
+    # Gmail app passwords are often copied as four groups with spaces.
+    # SMTP expects the 16 characters without spaces.
+    return settings.SMTP_PASSWORD.replace(" ", "")
+
+
+def _validate_smtp_settings() -> None:
+    missing = []
+    if _is_placeholder(settings.SMTP_USER, "your_gmail@gmail.com"):
+        missing.append("SMTP_USER")
+    if _is_placeholder(settings.SMTP_PASSWORD, "your_16_char_app_password"):
+        missing.append("SMTP_PASSWORD")
+    if missing:
+        raise RuntimeError(
+            "SMTP is not configured. Set "
+            + ", ".join(missing)
+            + " in .env using your Gmail address and Gmail App Password."
+        )
+
+
 # ── HTML email templates ──────────────────────────────────────────────────────
 
 def _base_template(body_html: str) -> str:
@@ -111,9 +135,26 @@ def _welcome_email_html(username: str) -> str:
     """)
 
 
+def _password_reset_email_html(username: str, reset_link: str) -> str:
+    return _base_template(f"""
+        <div class="warning-icon">🔐</div>
+        <h2 style="margin:0 0 8px;color:#1f2937;">Reset Your Password</h2>
+        <p>Hi <strong>{username}</strong>,</p>
+        <p>We received a request to reset your Tracksy password.</p>
+        <p>
+          <a class="btn" href="{reset_link}" target="_blank" rel="noopener">Reset Password</a>
+        </p>
+        <p style="font-size:13px;color:#6b7280;margin-top:24px;">
+          This link expires in 30 minutes. If you did not request this, you can ignore this email.
+        </p>
+    """)
+
+
 # ── Core send function ────────────────────────────────────────────────────────
 
 async def _send_email(to_email: str, subject: str, html_body: str) -> None:
+    _validate_smtp_settings()
+
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"]    = f"{settings.EMAILS_FROM_NAME} <{settings.SMTP_USER}>"
@@ -131,7 +172,7 @@ async def _send_email(to_email: str, subject: str, html_body: str) -> None:
       port=settings.SMTP_PORT,
       start_tls=True,
       username=settings.SMTP_USER,
-      password=settings.SMTP_PASSWORD,
+      password=_smtp_password(),
     )
 
 
@@ -142,6 +183,14 @@ async def send_welcome_email(to_email: str, username: str) -> None:
         to_email,
         "Welcome to Tracksy! 🎉",
         _welcome_email_html(username),
+    )
+
+
+async def send_password_reset_email(to_email: str, username: str, reset_link: str) -> None:
+    await _send_email(
+        to_email,
+        "Reset your Tracksy password",
+        _password_reset_email_html(username, reset_link),
     )
 
 

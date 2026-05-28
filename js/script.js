@@ -11,6 +11,7 @@ const API = (() => {
 // ── Auth state ──────────────────────────────────────────────
 let authToken   = localStorage.getItem("tracksy_token") || null;
 let currentUser = JSON.parse(localStorage.getItem("tracksy_user") || "null");
+const resetToken = new URLSearchParams(window.location.search).get("reset_token");
 
 // ── Helpers ─────────────────────────────────────────────────
 function authHeaders() {
@@ -40,7 +41,13 @@ function showToast(msg, type = "success") {
 
 // ── Init ─────────────────────────────────────────────────────
 window.onload = () => {
-    if (authToken && currentUser) {
+    if (resetToken) {
+        localStorage.removeItem("tracksy_token");
+        localStorage.removeItem("tracksy_user");
+        document.getElementById("authPage").style.display = "flex";
+        document.getElementById("app").style.display      = "none";
+        showResetPasswordMode();
+    } else if (authToken && currentUser) {
         document.getElementById("authPage").style.display = "none";
         document.getElementById("app").style.display      = "flex";
         initApp();
@@ -50,6 +57,18 @@ window.onload = () => {
     }
 };
 
+function showResetPasswordMode() {
+    document.getElementById("usernameGroup").style.display = "none";
+    document.getElementById("emailGroup").style.display = "none";
+    document.getElementById("password").value = "";
+    document.getElementById("password").placeholder = "New password";
+    document.getElementById("resetNotice").style.display = "block";
+    document.querySelector(".auth-buttons .btn-primary").style.display = "none";
+    document.querySelector(".auth-buttons .btn-secondary").style.display = "none";
+    document.querySelector(".auth-buttons .btn-link").style.display = "none";
+    document.getElementById("resetPasswordBtn").style.display = "flex";
+}
+
 // ── Auth: Login ──────────────────────────────────────────────
 window.login = async function () {
     const email    = document.getElementById("email").value.trim();
@@ -57,11 +76,10 @@ window.login = async function () {
     if (!email || !password) { showToast("Please fill all fields", "error"); return; }
 
     try {
-        const body = new URLSearchParams({ username: email, password });
         const res  = await fetch(`${API}/auth/login`, {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: email, password })
         });
         const data = await res.json();
         if (!res.ok) { showToast(data.detail || "Login failed", "error"); return; }
@@ -101,6 +119,48 @@ window.signup = async function () {
 
         showToast(`Account created! Welcome, ${data.username}!`);
         setTimeout(() => location.reload(), 800);
+    } catch (e) {
+        showToast("Could not reach backend. Make sure the server is running.", "error");
+    }
+};
+
+window.forgotPassword = async function () {
+    const email = document.getElementById("email").value.trim();
+    if (!email) { showToast("Enter your email first", "error"); return; }
+
+    try {
+        const res = await fetch(`${API}/auth/forgot-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (!res.ok) { showToast(data.detail || "Could not send reset email", "error"); return; }
+        showToast(data.message || "Password reset email sent!");
+    } catch (e) {
+        showToast("Could not reach backend. Make sure the server is running.", "error");
+    }
+};
+
+window.resetPassword = async function () {
+    const password = document.getElementById("password").value;
+    if (!password || password.length < 6) {
+        showToast("Password must be at least 6 characters", "error");
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API}/auth/reset-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: resetToken, password })
+        });
+        const data = await res.json();
+        if (!res.ok) { showToast(data.detail || "Could not reset password", "error"); return; }
+        showToast(data.message || "Password reset successful");
+        setTimeout(() => {
+            window.location.href = `${window.location.origin}${window.location.pathname}`;
+        }, 1000);
     } catch (e) {
         showToast("Could not reach backend. Make sure the server is running.", "error");
     }

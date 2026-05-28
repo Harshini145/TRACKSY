@@ -27,12 +27,13 @@
             <h2>Tracksy</h2>
         </div>
         <p class="subtitle">Manage your expenses effortlessly</p>
+        <p id="resetNotice" class="auth-notice" style="display:none;">Enter a new password for your account.</p>
 
-        <div class="input-group">
+        <div id="usernameGroup" class="input-group">
             <i class="fas fa-user"></i>
             <input id="username" placeholder="Username">
         </div>
-        <div class="input-group">
+        <div id="emailGroup" class="input-group">
             <i class="fas fa-envelope"></i>
             <input id="email" placeholder="Email">
         </div>
@@ -44,6 +45,8 @@
         <div class="auth-buttons">
             <button class="btn-primary" onclick="login()">Login</button>
             <button class="btn-secondary" onclick="signup()">Sign Up</button>
+            <button class="btn-link" onclick="forgotPassword()">Forgot password?</button>
+            <button id="resetPasswordBtn" class="btn-primary" onclick="resetPassword()" style="display:none;">Reset Password</button>
         </div>
     </div>
 </div>

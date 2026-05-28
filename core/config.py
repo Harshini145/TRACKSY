@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "change-me-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080  # 7 days
+    APP_BASE_URL: str = "http://localhost:8000"
 
     # SMTP / Gmail
     SMTP_HOST: str = "smtp.gmail.com"
@@ -27,18 +28,18 @@ class Settings(BaseSettings):
     BUDGET_WARNING_PERCENT: float = 80.0   # fire warning at 80 % spent
 
     @property
-    def DATABASE_URL(self) -> str:
+    def DATABASE_URL(self) -> URL:
         # Pass None (not empty string) when no password is set so MySQL
         # treats the login as "no password" instead of "wrong password"
         pwd = self.DB_PASSWORD if self.DB_PASSWORD else None
-        return str(URL.create(
+        return URL.create(
             "mysql+pymysql",
             username=self.DB_USER,
             password=pwd,
             host=self.DB_HOST,
             port=self.DB_PORT,
             database=self.DB_NAME
-        ))
+        )
 
     class Config:
         env_file = ".env"
