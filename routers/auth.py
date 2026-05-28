@@ -1,18 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
-from core.config import settings
 from core.database import get_db
-from core.security import (
-    create_access_token,
-    create_password_reset_token,
-    hash_password,
-    verify_password,
-    verify_password_reset_token,
-)
+from core.security import hash_password, verify_password, create_access_token
 from models.user import User, UserSetting, Category
-from services.email_service import send_password_reset_email, send_welcome_email
+from services.email_service import send_welcome_email
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -33,15 +26,6 @@ class TokenResponse(BaseModel):
 
 class LoginRequest(BaseModel):
     username: str
-    password: str
-
-
-class ForgotPasswordRequest(BaseModel):
-    email: EmailStr
-
-
-class ResetPasswordRequest(BaseModel):
-    token: str
     password: str
 
 
@@ -74,8 +58,8 @@ async def signup(payload: SignupRequest, db: Session = Depends(get_db)):
     # Send welcome email (fire & forget — don't block signup if SMTP fails)
     try:
         await send_welcome_email(user.email, user.username)
-    except Exception as e:
-        print(f"[WARN] Welcome email failed for {user.email}: {e}")
+    except Exception:
+        pass
 
     token = create_access_token({"sub": str(user.user_id)})
     return TokenResponse(
@@ -104,38 +88,3 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
         username=user.username,
         email=user.email,
     )
-
-
-@router.post("/forgot-password")
-async def forgot_password(
-    payload: ForgotPasswordRequest,
-    request: Request,
-    db: Session = Depends(get_db),
-):
-    user = db.query(User).filter(User.email == payload.email).first()
-    if user:
-        token = create_password_reset_token(user.user_id)
-        app_base_url = settings.APP_BASE_URL or str(request.base_url).rstrip("/")
-        reset_link = f"{app_base_url.rstrip('/')}/app/index.html?reset_token={token}"
-        try:
-            await send_password_reset_email(user.email, user.username, reset_link)
-        except Exception as e:
-            print(f"[WARN] Password reset email failed for {user.email}: {e}")
-            raise HTTPException(status_code=500, detail="Could not send password reset email")
-
-    return {"message": "If that email exists, a password reset link has been sent."}
-
-
-@router.post("/reset-password")
-def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db)):
-    if len(payload.password) < 6:
-        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
-
-    user_id = verify_password_reset_token(payload.token)
-    user = db.query(User).filter(User.user_id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=400, detail="Invalid or expired password reset link")
-
-    user.password = hash_password(payload.password)
-    db.commit()
-    return {"message": "Password reset successful. You can now log in."}

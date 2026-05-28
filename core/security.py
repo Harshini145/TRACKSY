@@ -36,28 +36,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
-def create_password_reset_token(user_id: int) -> str:
-    expire = datetime.utcnow() + timedelta(minutes=30)
-    payload = {"sub": str(user_id), "purpose": "password_reset", "exp": expire}
-    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-
-
-def verify_password_reset_token(token: str) -> int:
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        if payload.get("purpose") != "password_reset":
-            raise JWTError()
-        user_id = payload.get("sub")
-        if user_id is None:
-            raise JWTError()
-        return int(user_id)
-    except (JWTError, ValueError):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid or expired password reset link",
-        )
-
-
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
